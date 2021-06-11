@@ -5,3 +5,7 @@ en:
 
 de:
 	$(CC) src/utils.c src/main_decrypt.c -o decrypt
+
+clean:
+	rm -rf encrypt decrypt
+	> input.txt
