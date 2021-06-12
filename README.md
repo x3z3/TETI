@@ -1,6 +1,6 @@
 # TETI - Text Encryption Through Images (A Steganographic Model).
 
-![](brand/banner.gif)
+![](brand/Banner.gif)
 
 ## Running TETI
 
