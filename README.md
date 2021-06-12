@@ -6,7 +6,7 @@
 
 ### Encrypt
 
-1. Head to main_encrypt.c and enter the name of the file that you wish to encrypt the text into.
+1. Head to src/main_encrypt.c and enter the name of the file that you wish to encrypt the text into.
 2. Enter the text in input.txt.
 3. Use the command $ make encrypt
 4. Run encrypt with $ ./encrypt
@@ -14,7 +14,7 @@
 
 ### Decrypt
 
-1. Head to main_decrypt.c and enter the name of the file that you wish to decrypt (NewFile.txt is default)
+1. Head to src/main_decrypt.c and enter the name of the file that you wish to decrypt (NewFile.txt is default)
 2. Use the command $ make decrypt
 3. Run decrypt with $ ./decrypt
    The Decrypted text will be printed to console
@@ -25,6 +25,7 @@
 - The formula to convert a pixel to a character is given by this:
 - ASCII character : ((R%5)*25 + (G%5)*5 + (B)) + 2
 - Since the formula above gives us numbers from 0 to 124, adding 2 gives us numbers from 2-126 which covers all the printable ASCII characters.
+- The terminating character is given by ASCII 5 which stands for Enquiry, which is not used for common purposes.
 
 ## **Encryption**
 
