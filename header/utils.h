@@ -1,12 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/stat.h> // Check if file exists
 
 #define BYTE sizeof(char)
 
 // Stores the minimal needed Header information
-struct img_rel {
+
+typedef struct Image Image;
+struct Image {
     char hf[2];                // O: 00 Store Header Field [BM]
     unsigned int pix_offset;   // O: 10 Store image offset
     unsigned int w_pix;        // O: 18 Store width of img in pixels
@@ -15,17 +16,19 @@ struct img_rel {
     int padding;               //   Stores the number of bytes of padding
 };
 
-struct pixel {
+typedef struct Pixel Pixel;
+struct Pixel {
     unsigned char B;
     unsigned char G;
     unsigned char R;
 };
 
-extern struct img_rel load_details(char FILENAME[]);
-extern void decrypt_func(char FILENAME[], struct img_rel img);
-extern void encrypt_func(char FILENAME[], struct img_rel img);
+extern Image import_data(char FILENAME[]);
+void export_data();
 
-int ASCII_convert(struct pixel pix);
-void print_output();
-int adjust_value(int color, int req);
-struct pixel crypt(struct pixel pix, unsigned char ch);
+extern void ENCRYPT(char FILENAME[], Image img);
+extern void DECRYPT(char FILENAME[], Image img);
+
+int Pixel_to_ASCII(Pixel pix);
+Pixel magic(Pixel pix, unsigned char ch);
+int metadata_modifier(int color, int req);

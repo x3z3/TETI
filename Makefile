@@ -1,10 +1,14 @@
 CC = gcc
 
 en:
-	$(CC) src/utils.c src/main_encrypt.c -o encrypt
+	$(CC) src/helper.c src/encrypt.c -o encrypt
+	./encrypt
+	rm -rf encrypt
 
 de:
-	$(CC) src/utils.c src/main_decrypt.c -o decrypt
+	$(CC) src/helper.c src/decrypt.c -o decrypt
+	./decrypt
+	rm -rf decrypt
 
 clean:
 	rm -rf encrypt decrypt
