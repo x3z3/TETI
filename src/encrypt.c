@@ -3,8 +3,8 @@
 char FILENAME[] = "images/Yarty.bmp";
 
 int main(int argc, char *argv[]) {
-    struct img_rel img;
-    img = load_details(FILENAME);
+    Image img;
+    img = import_data(FILENAME);
 
-    encrypt_func(FILENAME, img);
+    ENCRYPT(FILENAME, img);
 }

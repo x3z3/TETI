@@ -1,8 +1,8 @@
 #include "../header/utils.h"
 
 // Loads relevant details of the image
-struct img_rel load_details(char FILENAME[]) {
-    struct img_rel img;
+Image import_data(char FILENAME[]) {
+    Image img;
 
     FILE *fp = fopen(FILENAME, "rb");
 
@@ -39,19 +39,19 @@ struct img_rel load_details(char FILENAME[]) {
     return img;
 }
 
-void decrypt_func(char FILENAME[], struct img_rel img) {
+void DECRYPT(char FILENAME[], Image img) {
     FILE *fp = fopen(FILENAME, "rb");
     FILE *wfp = fopen("output.txt", "w");
     fseek(fp, img.pix_offset, SEEK_SET);
 
-    struct pixel pix;
+    Pixel pix;
     unsigned char ch;
     int eof_flag = 0;
 
     for (int j = img.h_pix - 1; j >= 0; j--) {
         for (int i = 0; i < img.w_pix; i++) {
-            fread(&pix, sizeof(struct pixel), 1, fp);
-            ch = ASCII_convert(pix);
+            fread(&pix, sizeof(Pixel), 1, fp);
+            ch = Pixel_to_ASCII(pix);
             fprintf(wfp, "%c", ch);
             if (ch == 5) {
                 eof_flag = 1;
@@ -67,19 +67,19 @@ void decrypt_func(char FILENAME[], struct img_rel img) {
     fclose(wfp);
     fclose(fp);
 
-    print_output();
+    export_data();
 }
 
-void encrypt_func(char FILENAME[], struct img_rel img) {
+void ENCRYPT(char FILENAME[], Image img) {
 
     // append terminating char to the end of input:
     FILE *temp = fopen("input.txt", "a");
     fprintf(temp, "%c", 5);
     fclose(temp);
-    remove("NewImage.bmp");
+    remove("CrypticImage.bmp");
 
     FILE *rfp = fopen(FILENAME, "rb");
-    FILE *wfp = fopen("NewImage.bmp", "w");
+    FILE *wfp = fopen("CrypticImage.bmp", "w");
     FILE *tfp = fopen("input.txt", "r");
 
     // Copying the header files
@@ -89,26 +89,26 @@ void encrypt_func(char FILENAME[], struct img_rel img) {
         fwrite(&data, BYTE, 1, wfp);
     }
 
-    // Copying the pixel
-    struct pixel pix;
+    // Copying the Pixel
+    Pixel pix;
     char pad_ch = 0;
     int txt_flag = 1;
     unsigned char ch;
 
     for (int j = img.h_pix; j > 0; j--) {
         for (int i = 0; i < img.w_pix; i++) {
-            fread(&pix, sizeof(struct pixel), 1, rfp);
+            fread(&pix, sizeof(Pixel), 1, rfp);
 
-            // Writing the pixel
+            // Writing the Pixel
             if (txt_flag == 1) {
                 fread(&ch, BYTE, 1, tfp);
                 if (ch == 5) {
                     txt_flag = 0;
                 }
-                pix = crypt(pix, ch);
+                pix = magic(pix, ch);
             }
 
-            fwrite(&pix, sizeof(struct pixel), 1, wfp);
+            fwrite(&pix, sizeof(Pixel), 1, wfp);
         }
         fseek(rfp, img.padding, SEEK_CUR);
         fwrite(&pad_ch, BYTE, img.padding, wfp);
@@ -123,7 +123,7 @@ void encrypt_func(char FILENAME[], struct img_rel img) {
     fclose(temp);
 }
 
-struct pixel crypt(struct pixel pix, unsigned char ch) {
+Pixel magic(Pixel pix, unsigned char ch) {
     ch -= 2;
     int req_R, req_G, req_B;
 
@@ -133,14 +133,14 @@ struct pixel crypt(struct pixel pix, unsigned char ch) {
     ch = ch / 5;
     req_R = ch % 5;
 
-    pix.R = adjust_value(pix.R, req_R);
-    pix.G = adjust_value(pix.G, req_G);
-    pix.B = adjust_value(pix.B, req_B);
+    pix.R = metadata_modifier(pix.R, req_R);
+    pix.G = metadata_modifier(pix.G, req_G);
+    pix.B = metadata_modifier(pix.B, req_B);
 
     return pix;
 }
 
-int adjust_value(int color, int req) {
+int metadata_modifier(int color, int req) {
     int diff = req - (color % 5);
     if (diff >= 3) {
         diff -= 5;
@@ -157,7 +157,7 @@ int adjust_value(int color, int req) {
     }
 }
 
-int ASCII_convert(struct pixel pix) {
+int Pixel_to_ASCII(Pixel pix) {
     int res = 0;
     res += (pix.R % 5) * 25;
     res += (pix.G % 5) * 5;
@@ -166,9 +166,9 @@ int ASCII_convert(struct pixel pix) {
     return res;
 }
 
-void print_output() {
+void export_data() {
     FILE *fp = fopen("output.txt", "r");
-    printf("Output : \n");
+    printf("The Secret Text\n");
     unsigned char ch;
     fread(&ch, BYTE, 1, fp);
     while (ch != 5) {
