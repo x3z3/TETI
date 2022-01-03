@@ -21,12 +21,12 @@ Image import_data(char FILENAME[]) {
     if (img.hf[0] != 'B' && img.hf[1] != 'M') {
         printf("Incorrect Header field : %c%c\n", img.hf[0], img.hf[1]);
         printf("Terminating...\n");
-        exit(0);
+        exit(-1);
     }
     if (img.bitsperpix != 24) {
         printf("Bits per field incorrect : %d\n", img.bitsperpix);
         printf("Terminating...\n");
-        exit(0);
+        exit(-1);
     }
 
     // Calculate padding:
@@ -123,6 +123,7 @@ void ENCRYPT(char FILENAME[], Image img) {
     fclose(temp);
 }
 
+// Function to convert a character into a Pixel
 Pixel magic(Pixel pix, unsigned char ch) {
     ch -= 2;
     int req_R, req_G, req_B;
@@ -140,6 +141,7 @@ Pixel magic(Pixel pix, unsigned char ch) {
     return pix;
 }
 
+// Helper function for Magic
 int metadata_modifier(int color, int req) {
     int diff = req - (color % 5);
     if (diff >= 3) {
@@ -157,6 +159,7 @@ int metadata_modifier(int color, int req) {
     }
 }
 
+// Function to convert a Pixel to ASCII using the formula
 int Pixel_to_ASCII(Pixel pix) {
     int res = 0;
     res += (pix.R % 5) * 25;
@@ -166,9 +169,10 @@ int Pixel_to_ASCII(Pixel pix) {
     return res;
 }
 
+// Function to read output.txt, print the text, and delete output.txt
 void export_data() {
     FILE *fp = fopen("output.txt", "r");
-    printf("The Secret Text\n");
+    printf("The Secret Text :\n");
     unsigned char ch;
     fread(&ch, BYTE, 1, fp);
     while (ch != 5) {

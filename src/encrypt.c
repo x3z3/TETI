@@ -1,6 +1,6 @@
 #include "../header/utils.h"
 
-char FILENAME[] = "images/Yarty.bmp";
+char FILENAME[] = "images/Shibe.bmp";
 
 int main(int argc, char *argv[]) {
     Image img;
